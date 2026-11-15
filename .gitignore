@@ -1,0 +1,13 @@
+# Ambientes e arquivos temporários do Python
+.venv/
+__pycache__/
+*.py[cod]
+
+# Artefatos de empacotamento
+build/
+dist/
+
+# Vídeos locais e resultados de conversão
+in/
+out/
+*.avi
