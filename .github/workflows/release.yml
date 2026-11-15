@@ -1,0 +1,73 @@
+name: Windows release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-2025
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+          architecture: x64
+
+      - name: Run tests
+        run: python -m unittest discover -s tests -v
+
+      - name: Install build dependencies
+        run: |
+          python -m venv .venv
+          .\.venv\Scripts\python.exe -m pip install -r requirements-build.txt
+
+      - name: Download FFmpeg
+        shell: pwsh
+        run: |
+          $archive = Join-Path $env:RUNNER_TEMP 'ffmpeg-8.1.2-essentials_build.7z'
+          $destination = Join-Path $env:RUNNER_TEMP 'ffmpeg'
+          Invoke-WebRequest -Uri 'https://www.gyan.dev/ffmpeg/builds/packages/ffmpeg-8.1.2-essentials_build.7z' -OutFile $archive
+          $expected = 'e25b682664025d49034c981afb4bae36238a40f29a3cc1c713ad9a8b5b3528f6'
+          if ((Get-FileHash -LiteralPath $archive -Algorithm SHA256).Hash -ne $expected) {
+            throw 'O checksum do FFmpeg nao confere.'
+          }
+          7z x $archive "-o$destination" -y
+          if ($LASTEXITCODE -ne 0) {
+            throw "Falha ao extrair o FFmpeg (codigo $LASTEXITCODE)."
+          }
+
+      - name: Validate FFmpeg and build
+        shell: pwsh
+        run: |
+          $bin = Join-Path $env:RUNNER_TEMP 'ffmpeg\ffmpeg-8.1.2-essentials_build\bin'
+          $ffmpeg = Join-Path $bin 'ffmpeg.exe'
+          $ffprobe = Join-Path $bin 'ffprobe.exe'
+          & $ffprobe -version
+          if ($LASTEXITCODE -ne 0) { throw 'Falha ao executar FFprobe.' }
+          foreach ($check in @(
+            @{ Option = '-filters'; Names = @('ass', 'bwdif') },
+            @{ Option = '-encoders'; Names = @('dvvideo', 'pcm_s16le') },
+            @{ Option = '-muxers'; Names = @('data') }
+          )) {
+            $output = & $ffmpeg -hide_banner $check.Option
+            if ($LASTEXITCODE -ne 0) { throw "Falha ao consultar FFmpeg: $($check.Option)." }
+            foreach ($name in $check.Names) {
+              if (-not ($output | Select-String -Pattern "^\s*\S+\s+$name\s")) {
+                throw "Recurso FFmpeg ausente: $name."
+              }
+            }
+          }
+          .\build_windows.ps1 -FFmpegDir $bin
+
+      - name: Create draft release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$env:GITHUB_REF_NAME" .\dist\SonyDVDate.exe --draft --verify-tag --generate-notes
+          if ($LASTEXITCODE -ne 0) { throw "Falha ao criar o rascunho (codigo $LASTEXITCODE)." }

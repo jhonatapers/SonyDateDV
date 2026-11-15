@@ -117,6 +117,23 @@ As pastas `.venv`, `build`, `dist`, `in` e `out`, caches Python e arquivos AVI
 são ignorados pelo Git. Os testes em `tests` fazem parte do projeto e devem
 ser versionados.
 
+### Compilação pelo GitHub Actions
+
+Ao enviar uma tag começando com `v`, o GitHub Actions executa os testes,
+compila para Windows x64 e cria uma Release **em rascunho** com
+`SonyDVDate.exe`. O fluxo usa a build estática FFmpeg 8.1.2 essentials da
+Gyan e verifica seu SHA-256. A publicação do rascunho é manual, após a
+revisão dos requisitos de distribuição descritos abaixo.
+
+Depois de enviar o código e o workflow ao GitHub, crie e envie uma tag:
+
+```powershell
+git tag v1.0.0
+git push origin v1.0.0
+```
+
+O workflow precisa de permissão `contents: write` para criar a Release.
+
 ## Licenças e distribuição
 
 A fonte [SonyCam Original](https://fontstruct.com/fontstructions/show/1646448),
@@ -129,3 +146,9 @@ PyInstaller e da distribuição específica do FFmpeg, incluindo bibliotecas
 integradas, avisos e eventuais obrigações de disponibilização do código-fonte.
 O script de empacotamento não reúne esses materiais automaticamente. Uma
 build do FFmpeg com `--enable-gpl`, por exemplo, exige atenção aos termos GPL.
+Em especial, verifique e reúna os avisos e o código-fonte correspondente da
+build distribuída, incluindo suas bibliotecas e instruções de compilação,
+antes de publicar. A build Gyan usada no workflow é GPLv3 e contém bibliotecas
+estáticas; o workflow ainda não reúne esses materiais. Defina também uma
+licença para o código do projeto: um repositório público, por si só, não
+estabelece essa licença.
