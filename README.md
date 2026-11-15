@@ -1,4 +1,4 @@
-# Sony DV Date
+# SonyDateDV
 
 Aplicação para recuperar a data e a hora de gravação de vídeos DV e gravá-las
 sobre a imagem, no estilo de uma filmadora Sony. O arquivo original não é
@@ -107,7 +107,7 @@ O script procura FFmpeg e FFprobe no `PATH`. Para usar outra distribuição:
 .\build_windows.ps1 -FFmpegDir "C:\caminho\para\bin"
 ```
 
-O resultado é `dist\SonyDVDate.exe`, um executável com interface gráfica que
+O resultado é `dist\SonyDateDV.exe`, um executável com interface gráfica que
 inclui Python, Tkinter, a fonte, FFmpeg e FFprobe. O script não sobrescreve um
 executável existente nesse caminho. O programa extrai seus arquivos para uma
 pasta temporária ao iniciar; compile e teste na arquitetura e versão do
@@ -121,7 +121,7 @@ ser versionados.
 
 Ao enviar uma tag começando com `v`, o GitHub Actions executa os testes,
 compila para Windows x64 e cria uma Release **em rascunho** com
-`SonyDVDate.exe`. O fluxo usa a build estática FFmpeg 8.1.2 essentials da
+`SonyDateDV.exe`. O fluxo usa a build estática FFmpeg 8.1.2 essentials da
 Gyan e verifica seu SHA-256. A publicação do rascunho é manual, após a
 revisão dos requisitos de distribuição descritos abaixo.
 

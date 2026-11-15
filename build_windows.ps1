@@ -6,8 +6,8 @@ param(
 $ErrorActionPreference = "Stop"
 Set-Location $PSScriptRoot
 
-if (Test-Path "dist\SonyDVDate.exe") {
-    throw "dist\SonyDVDate.exe ja existe. Mova ou remova a distribuicao anterior antes de compilar."
+if (Test-Path "dist\SonyDateDV.exe") {
+    throw "dist\SonyDateDV.exe ja existe. Mova ou remova a distribuicao anterior antes de compilar."
 }
 if ($FFmpegDir) {
     $ffmpeg = Join-Path $FFmpegDir "ffmpeg.exe"
@@ -25,11 +25,11 @@ $font = (Resolve-Path "fonts\sonycam-original.ttf").Path
 $ffmpeg = (Resolve-Path -LiteralPath $ffmpeg).Path
 $ffprobe = (Resolve-Path -LiteralPath $ffprobe).Path
 
-& $Python -m PyInstaller --noconfirm --onefile --windowed --name SonyDVDate `
+& $Python -m PyInstaller --noconfirm --onefile --windowed --name SonyDateDV `
     --specpath build --workpath build\work --distpath dist `
     --add-data "$font;fonts" `
     --add-data "$ffmpeg;bin" --add-data "$ffprobe;bin" run_gui.py
 if ($LASTEXITCODE -ne 0) {
     throw "Falha ao empacotar a aplicacao (codigo $LASTEXITCODE)."
 }
-Write-Host "Executavel criado em dist\SonyDVDate.exe."
+Write-Host "Executavel criado em dist\SonyDateDV.exe."

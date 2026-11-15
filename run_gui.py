@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Script para executar a interface gráfica do Sony DV Date Converter."""
+"""Script para executar a interface gráfica do SonyDateDV Converter."""
 
 import os
 import sys

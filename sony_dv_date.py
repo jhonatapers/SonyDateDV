@@ -242,7 +242,7 @@ def main() -> int:
                 raise VideoError(f"{tool} nao encontrado no PATH.")
         fps = probe(source)
         output.parent.mkdir(parents=True, exist_ok=True)
-        with tempfile.TemporaryDirectory(prefix="sony-dv-date-") as directory:
+        with tempfile.TemporaryDirectory(prefix="sony-date-dv-") as directory:
             temp = Path(directory)
             (temp / "fonts").mkdir()
             shutil.copy2(font, temp / "fonts" / font.name)

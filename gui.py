@@ -16,7 +16,7 @@ NO_CONSOLE = getattr(subprocess, "CREATE_NO_WINDOW", 0)
 class DVConverterApp:
     def __init__(self, root):
         self.root = root
-        self.root.title("Sony DV Date Converter")
+        self.root.title("SonyDateDV Converter")
         self.root.geometry("600x450")
         self.root.resizable(True, True)
         self.root.minsize(500, 400)
@@ -29,7 +29,7 @@ class DVConverterApp:
 
         title = ttk.Label(
             main_frame,
-            text="Sony DV Date Converter",
+            text="SonyDateDV Converter",
             font=("Helvetica", 14, "bold")
         )
         title.pack(pady=(0, 8))
@@ -196,7 +196,7 @@ class DVConverterApp:
 
                 fps = probe(source, creationflags=NO_CONSOLE)
 
-                with tempfile.TemporaryDirectory(prefix="sony-dv-date-") as directory:
+                with tempfile.TemporaryDirectory(prefix="sony-date-dv-") as directory:
                     temp = Path(directory)
                     (temp / "fonts").mkdir()
                     shutil.copy2(font, temp / "fonts" / font.name)
