@@ -255,9 +255,9 @@ def main() -> int:
             subprocess.run(
                 ["ffmpeg", "-hide_banner", "-nostdin", "-n", "-i", str(source),
                  "-map", "0:v:0", "-map", "0:a?", "-vf",
-                 "bwdif=mode=send_frame:parity=auto:deint=interlaced,ass=datas.ass:fontsdir=fonts",
-                 "-c:v", "dvvideo", "-pix_fmt", "yuv420p" if fps == 25 else "yuv411p",
-                 "-c:a", "pcm_s16le",
+                 "ass=datas.ass:fontsdir=fonts",
+                 "-c:v", "dvvideo", "-pix_fmt", "+",
+                 "-c:a", "copy",
                  str(output)],
                 cwd=temp, check=True,
             )

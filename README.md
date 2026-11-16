@@ -20,16 +20,18 @@ válida ficam sem texto; se nenhum quadro tiver data válida, a conversão falha
 Anos de 95 a 99 são interpretados como 1995 a 1999, e de 00 a 94 como 2000
 a 2094.
 
-O vídeo é desentrelaçado e recodificado em DV, e as faixas de áudio são
-convertidas para PCM de 16 bits. A leitura das datas percorre o arquivo inteiro
-antes da conversão. Reserve espaço em disco para o novo vídeo e mantenha uma
-cópia do original.
+O vídeo mantém o entrelaçamento e o formato de pixels originais; apenas a data
+e a hora são sobrepostas. Para gravar o texto na imagem, é necessário
+recodificar o vídeo em DV, o que pode causar perda de qualidade. As faixas de
+áudio são copiadas sem recodificação. A leitura das datas percorre o arquivo
+inteiro antes da conversão. Reserve espaço em disco para o novo vídeo e
+mantenha uma cópia do original.
 
 ## Requisitos
 
 - Python 3.10 ou superior, com Tkinter para a interface gráfica.
 - FFmpeg e FFprobe disponíveis no `PATH`. O FFmpeg deve incluir os filtros
-  `ass` e `bwdif`, os codificadores `dvvideo` e `pcm_s16le`, e o muxer `data`.
+  `ass`, o codificador `dvvideo` e o muxer `data`.
 - O arquivo `fonts\sonycam-original.ttf`, incluído no projeto. A fonte é
   carregada automaticamente, sem instalação no sistema.
 

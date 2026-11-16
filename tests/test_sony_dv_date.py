@@ -11,7 +11,14 @@ from unittest.mock import Mock, patch
 
 import gui
 import run_gui
+import sony_dv_date
 from sony_dv_date import VideoError, ass_time, camera_date_text, camera_time_glyphs, extract_subtitles, probe, recording_date
+
+
+def assert_date_only_command(test, command):
+    test.assertEqual(command[command.index("-vf") + 1], "ass=datas.ass:fontsdir=fonts")
+    test.assertEqual(command[command.index("-pix_fmt") + 1], "+")
+    test.assertEqual(command[command.index("-c:a") + 1], "copy")
 
 
 class PackagingTests(unittest.TestCase):
@@ -51,6 +58,20 @@ class ConsoleVisibilityTests(unittest.TestCase):
             self.assertEqual(probe_mock.call_args.kwargs["creationflags"], flags)
             self.assertEqual(extract_mock.call_args.kwargs["creationflags"], flags)
             self.assertEqual(run_mock.call_args.kwargs["creationflags"], flags)
+            assert_date_only_command(self, run_mock.call_args.args[0])
+
+    def test_cli_only_overlays_date(self):
+        with tempfile.TemporaryDirectory() as directory:
+            source = Path(directory) / "input.avi"
+            source.touch()
+            output = Path(directory) / "output.avi"
+            with patch.object(sony_dv_date.sys, "argv", ["sony_dv_date.py", str(source), "-o", str(output)]), \
+                 patch.object(sony_dv_date.shutil, "which", return_value="tool"), \
+                 patch.object(sony_dv_date, "probe", return_value=Fraction(25)), \
+                 patch.object(sony_dv_date, "extract_subtitles", return_value=(1, 0)), \
+                 patch.object(sony_dv_date.subprocess, "run") as run_mock:
+                self.assertEqual(sony_dv_date.main(), 0)
+            assert_date_only_command(self, run_mock.call_args.args[0])
 
     def test_probe_passes_creation_flags(self):
         response = SimpleNamespace(stdout=json.dumps({"streams": [{
